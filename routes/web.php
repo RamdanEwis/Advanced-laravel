@@ -24,4 +24,5 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('oauth/{provider}', [SocialConttoller::class ,'redirectToProvider']);
-Route::get('oauth/{provider}/callback', [SocialConttoller::class ,'handleProviderCallback']);
+Route::get('oauth/google/callback', [SocialLoginController::class, 'callbackGoogle']);
+Route::get('oauth/linkedin/callback', [SocialLoginController::class, 'callbackLinkedin']);
