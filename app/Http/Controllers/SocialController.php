@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
-class SocialConttoller extends Controller
+class SocialController extends Controller
 {
 
 

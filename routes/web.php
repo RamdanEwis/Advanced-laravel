@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SocialConttoller;
+use App\Http\Controllers\SocialController;
+
 
 
 /*
@@ -23,6 +26,14 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('oauth/{provider}', [SocialConttoller::class ,'redirectToProvider']);
-Route::get('oauth/google/callback', [SocialLoginController::class, 'callbackGoogle']);
-Route::get('oauth/linkedin/callback', [SocialLoginController::class, 'callbackLinkedin']);
+Route::get('oauth/{provider}', [SocialController::class ,'redirectToProvider']);
+Route::get('oauth/google/callback', [SocialController::class, 'callbackGoogle']);
+Route::get('oauth/linkedin/callback', [SocialController::class, 'callbackLinkedin']);
+
+
+
+
+Route::resource('Product', ProductController::class);
+
+
+Route::resource('Users', UserController::class);
