@@ -1,11 +1,7 @@
 <?php
 
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SocialController;
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +9,8 @@ use App\Http\Controllers\SocialController;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
@@ -22,18 +18,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::get('oauth/{provider}', [SocialController::class ,'redirectToProvider']);
-Route::get('oauth/google/callback', [SocialController::class, 'callbackGoogle']);
-Route::get('oauth/linkedin/callback', [SocialController::class, 'callbackLinkedin']);
+//------------------------------- Backup with package --------------------------\\
+//------------------------------------------------------------------\\
+Route::resource('backups', BackupController::class)->only([
+    'store', 'index', 'destroy'
+])->names('backup.with.package');
 
 
+//------------------------------- Backup without package --------------------------\\
+//------------------------------------------------------------------\\
+Route::get('backups', [BackupController::class, 'index2'])->name('backups.without.package.all');
+Route::post('backups/create', [BackupController::class, 'store2'])->name('backups.without.package.create');
+Route::delete('/backups/{name}', [BackupController::class, 'destroy2'])->name('backups.without.package.delete');
 
-
-Route::resource('Product', ProductController::class);
-
-
-Route::resource('Users', UserController::class);
