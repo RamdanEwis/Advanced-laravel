@@ -12,7 +12,6 @@
       </LaravelCodeGeneration>
     </option>
     <option name="frameworkFound" value="true" />
-    <option name="laravelBasePath" value="secure-jwt-backend" />
     <option name="userClassName" value="\App\Models\User" />
   </component>
 </project>

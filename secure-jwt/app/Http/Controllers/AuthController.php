@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
     // 🚪 Handle user login
     public function login(LoginRequest $request)
     {
@@ -20,11 +22,11 @@ class AuthController extends Controller
         try {
             // 🛑 Attempt authentication
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Invalid credentials'], 401);
+                return $this->bad_request('Invalid credentials');
             }
 
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred'], 500);
+            return $this->internal_server_error_response();
         }
 
         // 🔐 Generate CSRF token for extra security
@@ -34,9 +36,9 @@ class AuthController extends Controller
         $accessTokenCookie = cookie(
             'access_token',
             $token,
-            60, // Minutes
+            60 * 60, // Minutes
             '/',
-            false,
+            null,
             false,   // Secure: true for HTTPS
             true,   // HttpOnly
             false,  // Raw
@@ -49,19 +51,16 @@ class AuthController extends Controller
             $csrfToken,
             60,
             '/',
-            false,
+            null,
             false,   // Secure: true for HTTPS in production
             true,  // HttpOnly
             false,  // Raw
             'None'  // SameSite
         );
         // 🎉 Return success response with cookies
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'csrf_token'=>$csrfToken,
-            'user'=> new UserResource(auth()->user())])
-            ->cookie($accessTokenCookie)
-            ->cookie($csrfTokenCookie);
+        return $this->ok_response([
+            'user'=> new UserResource(auth()->user())
+        ])->cookie($accessTokenCookie);
     }
 
 

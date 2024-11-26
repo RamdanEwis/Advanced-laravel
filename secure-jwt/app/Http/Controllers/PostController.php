@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
 {
+use ApiResponse;
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     // 🚀 Optimized index method with caching
     public function index(Request $request)
     {
@@ -21,17 +28,16 @@ class PostController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         });
-
-        return response()->json($posts);
+        return $this->ok_response($posts);
     }
 
 
     /**
      * Fetch user posts 📝 with CSRF protection 🛡️
      */
-    public function fetchUserPosts(Request $request)
+    public function fetchUserPosts(Request $request): \Illuminate\Http\JsonResponse
     {
-        $user = auth()->user(); // 🎯 Automatically handles JWT via middleware
+        $user = auth('api')->user(); // 🎯 Automatically handles JWT via middleware
 
         // 🌟 Get paginated posts for the authenticated user
         $posts = Post::where('user_id', $user->id)
@@ -39,6 +45,6 @@ class PostController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return response()->json($posts);
+        return $this->ok_response(['posts' =>$posts]);
     }
 }

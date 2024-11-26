@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Middleware\AddJwtFromCookieToRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth:api'])->group(function () {
     // 📄 Get all posts
     Route::get('/posts', [PostController::class, 'index']);
-
     // 🛡️ Protected route to fetch posts created by the authenticated user
-    Route::get('/user-posts', [PostController::class, 'fetchUserPosts']);
+    Route::get('/user/posts', [PostController::class, 'fetchUserPosts']);
 });
